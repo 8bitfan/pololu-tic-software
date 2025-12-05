@@ -85,6 +85,8 @@ Include the appropriate header in your C++ source files:
 
 Create a `CMakeLists.txt` in your project:
 
+**Method 1: Using pkg-config (recommended if library is installed to system):**
+
 ```cmake
 cmake_minimum_required(VERSION 3.10)
 project(MyTicApp)
@@ -100,6 +102,47 @@ add_executable(myapp main.cpp)
 target_include_directories(myapp PRIVATE ${TIC_INCLUDE_DIRS})
 target_link_libraries(myapp ${TIC_LIBRARIES})
 target_compile_options(myapp PRIVATE ${TIC_CFLAGS_OTHER})
+```
+
+**Method 2: Manual library finding (if library is not in standard location):**
+
+```cmake
+cmake_minimum_required(VERSION 3.10)
+project(MyTicApp)
+
+set(CMAKE_CXX_STANDARD 11)
+
+# Manually find the Tic library
+find_path(TIC_INCLUDE_DIR tic.hpp
+  PATHS /usr/local/include /usr/include
+  PATH_SUFFIXES libpololu-tic-1
+)
+
+find_library(TIC_LIBRARY
+  NAMES pololu-tic-1
+  PATHS /usr/local/lib /usr/lib
+)
+
+add_executable(myapp main.cpp)
+
+target_include_directories(myapp PRIVATE ${TIC_INCLUDE_DIR})
+target_link_libraries(myapp ${TIC_LIBRARY})
+
+# On Windows, you may need to add the DLL directory to PATH
+if(WIN32)
+  get_filename_component(TIC_DLL_DIR ${TIC_LIBRARY} DIRECTORY)
+  set_target_properties(myapp PROPERTIES
+    VS_DEBUGGER_ENVIRONMENT "PATH=${TIC_DLL_DIR};$ENV{PATH}"
+  )
+endif()
+```
+
+**Method 3: Specifying custom installation prefix:**
+
+If you installed the library to a custom location (e.g., `/opt/tic`):
+
+```bash
+cmake .. -DCMAKE_PREFIX_PATH=/opt/tic
 ```
 
 #### Manual Linking

@@ -18,12 +18,22 @@ target_link_libraries(example ${TIC_LIBRARIES})
 target_compile_options(example PRIVATE ${TIC_CFLAGS_OTHER})
 
 # On Windows, copy the DLL to the output directory
+# Note: This is a best-effort approach. The DLL location may vary.
+# If this doesn't work, manually copy the DLL to the executable directory.
 if(WIN32)
-  # This assumes the DLL is in the same location as the .lib file
-  add_custom_command(TARGET example POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${TIC_LIBRARY_DIRS}/pololu-tic-1.dll"
-    $<TARGET_FILE_DIR:example>
-    COMMENT "Copying Tic DLL to output directory"
+  # Try to find the DLL in common locations
+  find_file(TIC_DLL pololu-tic-1.dll
+    PATHS ${TIC_LIBRARY_DIRS} ${TIC_LIBRARY_DIRS}/../bin
+    NO_DEFAULT_PATH
   )
+  if(TIC_DLL)
+    add_custom_command(TARGET example POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "${TIC_DLL}"
+      $<TARGET_FILE_DIR:example>
+      COMMENT "Copying Tic DLL to output directory"
+    )
+  else()
+    message(WARNING "Could not find pololu-tic-1.dll. You may need to manually copy it to the executable directory.")
+  endif()
 endif()

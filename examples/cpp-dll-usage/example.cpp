@@ -16,6 +16,7 @@
 #include <tic.hpp>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <vector>
 
 // Function to display device information
@@ -25,7 +26,11 @@ void display_device_info(const tic::device & device)
   std::cout << "  Name: " << device.get_name() << std::endl;
   std::cout << "  Short Name: " << device.get_short_name() << std::endl;
   std::cout << "  Serial Number: " << device.get_serial_number() << std::endl;
-  std::cout << "  Firmware Version: 0x" << std::hex << device.get_firmware_version() << std::dec << std::endl;
+  
+  // Display firmware version in hexadecimal
+  std::ostringstream fwVersion;
+  fwVersion << "0x" << std::hex << device.get_firmware_version();
+  std::cout << "  Firmware Version: " << fwVersion.str() << std::endl;
   std::cout << std::endl;
 }
 
