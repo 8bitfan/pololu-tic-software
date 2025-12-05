@@ -15,6 +15,17 @@ Installers for this software are available for download from the
 See [BUILDING.md](BUILDING.md) for information about how to compile the software
 from source.
 
+## Using as a C++ DLL/Shared Library
+
+The libpololu-tic library can be used as a DLL (Windows) or shared library (Linux/macOS) 
+in your own C++ projects. The library provides both a C API and a modern C++ wrapper.
+
+See [DLL_USAGE.md](DLL_USAGE.md) for:
+- How to build the library as a DLL/shared library
+- How to link against the library in your projects
+- API documentation and usage examples
+- Complete working example code in [examples/cpp-dll-usage](examples/cpp-dll-usage)
+
 ## Version history
 
 - 1.8.3 (2025-05-01):
